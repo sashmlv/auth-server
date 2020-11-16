@@ -7,5 +7,9 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "sashmlv",
-  "license": "UNLICENSE"
+  "license": "UNLICENSE",
+  "dependencies": {
+    "pino": "^6.7.0",
+    "redis": "^3.0.2"
+  }
 }

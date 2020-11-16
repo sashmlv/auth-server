@@ -1,0 +1,9 @@
+**/dist
+**/node_modules
+**/package-lock.json
+certs/*
+!certs/certs.sh
+!backup/*
+.editorconfig
+.env
+docker/.env-docker
