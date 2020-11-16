@@ -4,11 +4,17 @@
   "description": "The auth server.",
   "main": "index.js",
   "scripts": {
+    "start": "node ./index",
+    "proxy:up": "docker-compose -p auth-proxy -f ./docker/docker-compose.yml up --detach --build",
+    "proxy:down": "docker-compose -p auth-proxy -f ./docker/docker-compose.yml down",
+    "proxy:start": "docker-compose -p auth-proxy -f ./docker/docker-compose.yml start",
+    "proxy:stop": "docker-compose -p auth-proxy -f ./docker/docker-compose.yml stop",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "sashmlv",
   "license": "UNLICENSE",
   "dependencies": {
+    "dotenv": "^8.2.0",
     "pino": "^6.7.0",
     "redis": "^3.0.2"
   }
