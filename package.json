@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node ./index",
+    "api": "node ./api/server.js",
     "proxy:up": "docker-compose -p auth-proxy -f ./docker/docker-compose.yml up --detach --build",
     "proxy:down": "docker-compose -p auth-proxy -f ./docker/docker-compose.yml down",
     "proxy:start": "docker-compose -p auth-proxy -f ./docker/docker-compose.yml start",

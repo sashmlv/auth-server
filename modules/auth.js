@@ -1,8 +1,22 @@
 'use strict';
 
-const log = require( 'pino' )(),
-   proxy = require( './proxy' ),
-   { URLS } = require( '../config' );
+const proxy = require( './proxy' ),
+   {
+      NODE_ENV,
+      SSL_ENABLED,
+      URLS,
+   } = require( '../config' ),
+   {
+      frontend,
+      apiUsers,
+   } = URLS,
+   http = NODE_ENV === 'production' || SSL_ENABLED ? require( 'https' ) : require( 'http' ),
+   notFound = JSON.stringify({
+
+      message: 'Not Found',
+      code: 'NOT_FOUND',
+      status: 404,
+   });
 
 /**
  * Check access and go forward
@@ -12,27 +26,23 @@ const log = require( 'pino' )(),
  **/
 function auth( req, res ) {
 
-   log.info( req.url );
-
    switch ( true ){
 
       case is( '/css', req.url ):
       case is( '/js', req.url ):
       case is( '/signin', req.url ):
       case is( '/signup', req.url ):
-         return proxy( req, res, URLS.frontend );
+         return proxy( req, res, frontend );
+      case is( '/api/signup', req.url ):
+         return proxy( req, res, apiUsers );
+      case is( '/api/signin', req.url ):
+         // return proxy( req, res, apiUsers );
    }
 
    return res.writeHead( 404, {
 
       'Content-Type': 'application/json'
-   }).end( JSON.stringify({
-
-      message: 'Not Found',
-      code: 'NOT_FOUND',
-      status: 404,
-   }));
-
+   }).end( notFound );
 };
 
 /**

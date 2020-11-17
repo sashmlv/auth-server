@@ -35,6 +35,7 @@ const config = {
    URLS: {
 
       frontend: env.URLS_FRONTEND,
+      apiUsers: env.URLS_API_USERS,
    },
 };
 
