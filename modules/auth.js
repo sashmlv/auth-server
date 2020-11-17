@@ -1,5 +1,9 @@
 'use strict';
 
+const log = require( 'pino' )(),
+   proxy = require( './proxy' ),
+   { URLS } = require( '../config' );
+
 /**
  * Check access and go forward
  * @param {object} req
@@ -8,25 +12,39 @@
  **/
 function auth( req, res ) {
 
+   log.info( req.url );
+
    switch ( true ){
 
-      case '' === req.url:
-         return undefined;
+      case is( '/css', req.url ):
+      case is( '/js', req.url ):
+      case is( '/signin', req.url ):
+      case is( '/signup', req.url ):
+         return proxy( req, res, URLS.frontend );
    }
 
-   return res.writeHead(
-      200, {
+   return res.writeHead( 404, {
 
-         'Content-Type': 'application/json'
-      }
-   ).end( JSON.stringify({
+      'Content-Type': 'application/json'
+   }).end( JSON.stringify({
 
-      name: 'AuthError',
-      message: 'Access denied',
-      code: 'ACCESS_DENIED',
-      status: 403,
+      message: 'Not Found',
+      code: 'NOT_FOUND',
+      status: 404,
    }));
 
 };
+
+/**
+ * Check is url starts with str
+ * @param {srting} str
+ * @param {srting} url
+ * @return {boolean} Return result
+ **/
+
+function is( str, url ) {
+
+   return url.indexOf( str ) === 0;
+}
 
 module.exports = auth;

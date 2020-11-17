@@ -3,7 +3,8 @@
 const path = require( 'path' ),
    fs = require( 'fs' ),
    dotenv = require( 'dotenv' ),
-   ROOT = __dirname,
+   parseUrls = require( './parse.urls' ),
+   ROOT = path.resolve( `${ __dirname }/..` ),
    env = dotenv.parse( fs.readFileSync( `${ ROOT }/.env` )),
    NODE_ENV = process.env.NODE_ENV || env.NODE_ENV || 'development';
 
@@ -31,6 +32,12 @@ const config = {
       PORT: env.STORAGE_PORT,
       PASSWORD: env.STORAGE_PASSWORD,
    },
+   URLS: {
+
+      frontend: env.URLS_FRONTEND,
+   },
 };
 
-module.exports = config;
+config.URLS = parseUrls( config.URLS );
+
+module.exports = Object.freeze( config );
