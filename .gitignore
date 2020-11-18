@@ -3,8 +3,8 @@
 **/package-lock.json
 certs/*
 !certs/certs.sh
-!backup/*
-.editorconfig
 .env
+.editorconfig
+!backup/*
 docker/.env-docker
 .crd
