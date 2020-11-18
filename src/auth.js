@@ -30,7 +30,7 @@ const proxy = require( '../modules/proxy' ),
  * @param {object} res
  * @return {undefined}
  **/
-async function auth( req, res ) {
+async function auth( req, res ){
 
    try {
 

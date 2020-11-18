@@ -14,5 +14,10 @@ services:
   redis:
     container_name: auth-redis
     image: redis:6.0.9-alpine
+    command: redis-server --requirepass ${STORAGE_PASSWORD}
+    ports:
+      - 6379:6379
     volumes:
       - $PWD/docker/redis-data:/var/lib/redis
+    env_file:
+      - .env-docker
