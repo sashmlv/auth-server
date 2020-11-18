@@ -40,3 +40,5 @@ async function request( opts ) {
       req.end();
    });
 }
+
+module.exports = request;

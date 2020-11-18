@@ -4,11 +4,17 @@ const jwt = require( 'jsonwebtoken' ),
    request = require( '../modules/request' ),
    response = require( '../modules/response' ),
    storage = require( '../libs/storage' ),
-   nanoid = require( 'nanoid' ),
+   { nanoid } = require( 'nanoid' ),
    {
       ACCESS_KEY,
       REFRESH_KEY,
-   } = require( '../config' );
+   } = require( '../config' ),
+   notFound = JSON.stringify({
+
+      message: 'Not Found',
+      code: 'NOT_FOUND',
+      status: 404,
+   });
 
 /**
  * User signin
@@ -17,7 +23,7 @@ const jwt = require( 'jsonwebtoken' ),
  **/
 async function userSignin( res, { host, port }){
 
-   const user = await request({
+   let result = await request({
 
       host,
       port,
@@ -27,13 +33,28 @@ async function userSignin( res, { host, port }){
 
          'Content-Type': 'application/json'
       },
-   }),
-      accessSid = nanoid(),
+   });
+
+   result = typeof result === 'string' ? JSON.parse( result ) : result;
+
+   const user = result.data,
+      ok = result.success && user && user.id;
+
+   if( ! ok ){
+
+      return response( res, 404, { 'Content-Type': 'application/json' }, notFound );
+   }
+
+   const accessSid = nanoid(),
       refreshSid = nanoid(),
       accessToken = jwt.sign({ sid: accessSid }, ACCESS_KEY ),
       refreshToken = jwt.sign({ sid: refreshSid }, REFRESH_KEY );
 
-   // await storage.set()
+   // await storage.set( refreshSid, {
+
+   //    ...user,
+   //    accessSid,
+   // });
 
    return response( res, 200, {
 

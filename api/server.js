@@ -31,7 +31,7 @@ app.use(( err, req, res, next ) => { // error handler
       success: false,
    };
 
-   res.status( err.status ).json( err );
+   res.status( response.status ).json( response );
    return next();
 });
 

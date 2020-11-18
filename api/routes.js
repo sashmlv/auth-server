@@ -10,7 +10,7 @@ router.use(( req, res, next ) => {
    const key = `${ req.method }:${ req.url }`,
       data = responses[ key ];
 
-   if( data.headers ){
+   if( data && data.headers ){
 
       for( const key in data.headers ){
 
@@ -21,7 +21,7 @@ router.use(( req, res, next ) => {
    const response = {
 
       status: 200,
-      data: data.body || data,
+      data: data && data.body || data,
       success: true,
    };
 
