@@ -2,26 +2,11 @@
 
 module.exports = {
 
-   'POST:/api/signin': {
-      headers: {
-         'Set-Cookie': 'session=refresh token;max-age=86400;samesite=lax;httpOnly;',
-      },
+   'GET:/api/user': {
       body: {
-         accessToken: 'access token',
+         login: 'username',
+         email: 'email@email.com',
+         password: 'abc',
       }
    },
-   'GET:/api/users': [
-      {
-         id: 1,
-         email: 'aaa@email.com',
-      },
-      {
-         id: 2,
-         email: 'bbb@email.com',
-      },
-      {
-         id: 3,
-         email: 'ccc@email.com',
-      },
-   ],
 };

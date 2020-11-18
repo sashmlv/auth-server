@@ -10,24 +10,30 @@ const {
    log = require( 'pino' )(),
    http = NODE_ENV === 'production' || SSL_ENABLED ? require( 'https' ) : require( 'http' );
 
-function proxy( req, res, { protocol, hostname, port }){
+function proxy( req, res, { host, port }){
 
-   return req.pipe(
+   return new Promise(( resolve, reject ) => {
 
-      http.request(
-         {
-            host: hostname,
-            port: port,
-            headers: req.headers,
-            method: req.method,
-            path: req.url,
-         },
-         response => {
-            res.writeHead( response.statusCode, response.headers );
-            response.pipe( res );
-         }
-      )
-   );
+      return req.pipe(
+
+         http.request(
+            {
+               host,
+               port,
+               headers: req.headers,
+               method: req.method,
+               path: req.url,
+            },
+            response => {
+
+               response.on( 'error', err => reject( err ));
+               res.writeHead( response.statusCode, response.headers );
+               response.pipe( res );
+               resolve();
+            }
+         ).on( 'error', err => reject( err ))
+      );
+   });
 }
 
 module.exports = proxy;

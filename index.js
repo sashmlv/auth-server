@@ -12,6 +12,9 @@ const {
    http = PROTOCOL === 'https' ? require( 'https' ) : require( 'http' ),
    auth = require( './modules/auth' );
 
+process.on('unhandledRejection', err => log.error(err))
+  .on('uncaughtException', err => log.error(err));
+
 http.createServer( auth ).listen(
 
    PORT,

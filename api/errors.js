@@ -2,12 +2,6 @@
 
 const errors = {
 
-   DENIED: makeError({
-      message: 'Access denied',
-      code: 'ACCESS_DENIED',
-      status: 403,
-   }),
-
    NOT_FOUND: makeError({
       message: 'Not found',
       code: 'NOT_FOUND',

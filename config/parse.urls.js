@@ -11,8 +11,8 @@ function parseUrls( urls ){
 
    for( const key in urls ){
 
-      const { protocol, hostname, port } = url.parse( urls[ key ]),
-         ok = protocol && hostname && port;
+      const { hostname, port } = url.parse( urls[ key ]),
+         ok = hostname && port;
 
       if( ! ok ){
 
@@ -21,8 +21,7 @@ function parseUrls( urls ){
 
       urls[ key ] = {
 
-         protocol,
-         hostname,
+         host: hostname,
          port,
       };
 

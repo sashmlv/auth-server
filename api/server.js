@@ -14,14 +14,12 @@ const express = require( 'express' ),
    app = express(),
    cookieParser = require( 'cookie-parser' ),
    bodyParser = require( 'body-parser' ),
-   authenticate = require( './authenticate' ),
    routes = require( './routes' );
 
 app.on( 'error', err => console.log( err ));
 
 app.use( cookieParser());
 app.use( bodyParser.json());
-app.use( authenticate );
 app.use( routes );
 app.use(( err, req, res, next ) => { // error handler
 

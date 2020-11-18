@@ -1,21 +1,26 @@
 'use strict';
 
 const proxy = require( './proxy' ),
-   {
-      NODE_ENV,
-      SSL_ENABLED,
-      URLS,
-   } = require( '../config' ),
+   { URLS } = require( '../config' ),
    {
       frontend,
       apiUsers,
    } = URLS,
-   http = NODE_ENV === 'production' || SSL_ENABLED ? require( 'https' ) : require( 'http' ),
+   log = require( 'pino' )(),
+   is = require( './is' ),
+   response = require( './response' ),
+   userSignin = require( './user.signin' ),
    notFound = JSON.stringify({
 
       message: 'Not Found',
       code: 'NOT_FOUND',
       status: 404,
+   }),
+   badRequest = JSON.stringify({
+
+      message: 'Bad Request',
+      code: 'BAD_REQUEST',
+      status: 400,
    });
 
 /**
@@ -24,37 +29,36 @@ const proxy = require( './proxy' ),
  * @param {object} res
  * @return {undefined}
  **/
-function auth( req, res ) {
+async function auth( req, res ) {
 
-   switch ( true ){
+   try {
 
-      case is( '/css', req.url ):
-      case is( '/js', req.url ):
-      case is( '/signin', req.url ):
-      case is( '/signup', req.url ):
-         return proxy( req, res, frontend );
-      case is( '/api/signup', req.url ):
-         return proxy( req, res, apiUsers );
-      case is( '/api/signin', req.url ):
-         // return proxy( req, res, apiUsers );
+      switch ( true ){
+
+         case is( '/css', req.url ):
+         case is( '/js', req.url ):
+         case is( '/signin', req.url ):
+         case is( '/signup', req.url ):
+
+            return await proxy( req, res, frontend );
+
+         case is( '/api/signup', req.url ):
+
+            return await proxy( req, res, apiUsers );
+
+         case is( '/api/signin', req.url ): {
+
+            return await userSignin( res, apiUsers );
+         }
+      }
+
+      return response( res, 404, { 'Content-Type': 'application/json' }, notFound );
    }
+   catch( err ){
 
-   return res.writeHead( 404, {
-
-      'Content-Type': 'application/json'
-   }).end( notFound );
+      log.error( err );
+      return response( res, 400, { 'Content-Type': 'application/json' }, badRequest );
+   }
 };
-
-/**
- * Check is url starts with str
- * @param {srting} str
- * @param {srting} url
- * @return {boolean} Return result
- **/
-
-function is( str, url ) {
-
-   return url.indexOf( str ) === 0;
-}
 
 module.exports = auth;
