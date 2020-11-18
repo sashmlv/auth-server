@@ -6,10 +6,10 @@
   "scripts": {
     "start": "node ./server",
     "api": "node ./api/server",
-    "proxy:up": "docker-compose -p auth-proxy -f ./docker/docker-compose.yml up --detach --build",
-    "proxy:down": "docker-compose -p auth-proxy -f ./docker/docker-compose.yml down",
-    "proxy:start": "docker-compose -p auth-proxy -f ./docker/docker-compose.yml start",
-    "proxy:stop": "docker-compose -p auth-proxy -f ./docker/docker-compose.yml stop",
+    "auth:up": "docker-compose -p auth-proxy -f ./docker/docker-compose.yml up --detach --build",
+    "auth:down": "docker-compose -p auth-proxy -f ./docker/docker-compose.yml down",
+    "auth:start": "docker-compose -p auth-proxy -f ./docker/docker-compose.yml start",
+    "auth:stop": "docker-compose -p auth-proxy -f ./docker/docker-compose.yml stop",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "sashmlv",

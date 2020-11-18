@@ -6,5 +6,7 @@ certs/*
 .env
 .editorconfig
 !backup/*
-docker/.env-docker
 .crd
+docker/.env-docker
+docker/redis-data
+

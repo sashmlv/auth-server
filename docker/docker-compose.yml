@@ -11,3 +11,8 @@ services:
       # - $PWD/certs:/etc/nginx/certs
     env_file:
       - .env-docker
+  redis:
+    container_name: auth-redis
+    image: redis:6.0.9-alpine
+    volumes:
+      - $PWD/docker/redis-data:/var/lib/redis
