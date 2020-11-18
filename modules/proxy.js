@@ -7,7 +7,6 @@ const {
    PORT,
    SSL_ENABLED,
 } = require( '../config' ),
-   log = require( 'pino' )(),
    http = NODE_ENV === 'production' || SSL_ENABLED ? require( 'https' ) : require( 'http' );
 
 function proxy( req, res, { host, port }){

@@ -1,7 +1,7 @@
 'use strict';
 
 const config = require( '../config' ),
-   log = require( 'pino' ),
+   log = require( './logger' ),
    redis = require( 'redis' ),
    { promisify } = require( 'util' ),
    client = redis.createClient({

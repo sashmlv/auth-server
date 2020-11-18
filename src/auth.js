@@ -1,16 +1,16 @@
 'use strict';
 
-const proxy = require( './proxy' ),
+const proxy = require( '../modules/proxy' ),
    { URLS } = require( '../config' ),
    {
       frontend,
       apiUsers,
    } = URLS,
-   log = require( 'pino' )(),
-   is = require( './is' ),
-   response = require( './response' ),
+   log = require( '../libs/logger' ),
+   is = require( '../modules/is' ),
+   response = require( '../modules/response' ),
    userSignin = require( './user.signin' ),
-   userToken = require( './user.token' ),
+   userToken = require( './user.access.token' ),
    notFound = JSON.stringify({
 
       message: 'Not Found',

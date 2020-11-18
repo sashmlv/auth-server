@@ -1,8 +1,8 @@
 'use strict';
 
 const jwt = require( 'jsonwebtoken' ),
-   request = require( './request' ),
-   response = require( './response' ),
+   request = require( '../modules/request' ),
+   response = require( '../modules/response' ),
    storage = require( '../libs/storage' ),
    nanoid = require( 'nanoid' ),
    {

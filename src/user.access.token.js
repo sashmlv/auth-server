@@ -1,7 +1,6 @@
 'use strict';
 
-const response = require( './response' ),
-   token = require( './token' ),
+const response = require( '../modules/response' ),
    storage = require( '../libs/storage' ),
    nanoid = require( 'nanoid' );
 
@@ -12,10 +11,10 @@ const response = require( './response' ),
  **/
 async function userSignin( res, { host, port }){
 
-   const accessToken = token( 'access', {
+   // const accessToken = token( 'access', {
 
-      sid: nanoid(),
-   });
+   //    sid: nanoid(),
+   // });
 
    return response( res, 200, {
 

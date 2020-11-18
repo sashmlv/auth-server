@@ -7,7 +7,7 @@ const {
    PORT,
    SSL_ENABLED,
 } = require( './config' ),
-   log = require( 'pino' )(),
+   log = require( './libs/logger' ),
    PROTOCOL = NODE_ENV === 'production' || SSL_ENABLED ? 'https' : 'http',
    http = PROTOCOL === 'https' ? require( 'https' ) : require( 'http' ),
    auth = require( './src/auth' );
