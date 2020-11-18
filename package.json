@@ -4,8 +4,8 @@
   "description": "The auth server.",
   "main": "index.js",
   "scripts": {
-    "start": "node ./index",
-    "api": "node ./api/server.js",
+    "start": "node ./server",
+    "api": "node ./api/server",
     "proxy:up": "docker-compose -p auth-proxy -f ./docker/docker-compose.yml up --detach --build",
     "proxy:down": "docker-compose -p auth-proxy -f ./docker/docker-compose.yml down",
     "proxy:start": "docker-compose -p auth-proxy -f ./docker/docker-compose.yml start",
@@ -17,6 +17,7 @@
   "dependencies": {
     "dotenv": "^8.2.0",
     "jsonwebtoken": "^8.5.1",
+    "nanoid": "^3.1.16",
     "pino": "^6.7.0",
     "redis": "^3.0.2"
   },

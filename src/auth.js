@@ -10,6 +10,7 @@ const proxy = require( './proxy' ),
    is = require( './is' ),
    response = require( './response' ),
    userSignin = require( './user.signin' ),
+   userToken = require( './user.token' ),
    notFound = JSON.stringify({
 
       message: 'Not Found',
@@ -46,10 +47,13 @@ async function auth( req, res ) {
 
             return await proxy( req, res, apiUsers );
 
-         case is( '/api/signin', req.url ): {
+         case is( '/api/signin', req.url ):
 
             return await userSignin( res, apiUsers );
-         }
+
+         case is( '/api/token', req.url ):
+
+            return await userToken( res, apiUsers );
       }
 
       return response( res, 404, { 'Content-Type': 'application/json' }, notFound );

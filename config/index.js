@@ -4,6 +4,7 @@ const path = require( 'path' ),
    fs = require( 'fs' ),
    dotenv = require( 'dotenv' ),
    parseUrls = require( './parse.urls' ),
+   crypt = require( './modules/crypt' ),
    ROOT = path.resolve( `${ __dirname }/..` ),
    env = dotenv.parse( fs.readFileSync( `${ ROOT }/.env` )),
    NODE_ENV = process.env.NODE_ENV || env.NODE_ENV || 'development';
@@ -26,6 +27,8 @@ const config = {
    SSL_CRT: env.SSL_CRT,
    HOST: env.HOST,
    PORT: env.PORT,
+   ACCESS_KEY: env.ACCESS_KEY,
+   REFRESH_KEY: env.REFRESH_KEY,
    STORAGE: {
 
       HOST: env.STORAGE_HOST,
@@ -40,5 +43,16 @@ const config = {
 };
 
 config.URLS = parseUrls( config.URLS );
+
+const PASSWORD = process.env.PASSWORD,
+   SALT = process.env.SALT;
+
+if( PASSWORD && SALT ){
+
+   crypt.initSync( PASSWORD, SALT );
+
+   config.ACCESS_KEY = crypt.decrypt( config.ACCESS_KEY );
+   config.REFRESH_KEY = crypt.decrypt( config.REFRESH_KEY );
+}
 
 module.exports = Object.freeze( config );

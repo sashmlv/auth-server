@@ -1,6 +1,7 @@
 'use strict';
 
-const url = require( 'url' );
+const url = require( 'url' ),
+   AuthError = require( '../modules/auth.error' );
 
 /**
  * Parse/prepare urls for config
@@ -16,7 +17,7 @@ function parseUrls( urls ){
 
       if( ! ok ){
 
-         throw new Error( `Bad url in config: "${ urls[ key ]}"` );
+         throw new AuthError( `Bad url in config: "${ urls[ key ]}"` );
       }
 
       urls[ key ] = {
