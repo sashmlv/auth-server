@@ -26,18 +26,19 @@ async function userSignin( res, { host, port }){
       headers: {
 
          'Content-Type': 'application/json'
-      }
-   });
-
-   const accessToken = jwt.sign({ sid: nanoid() }, ACCESS_KEY ),
-      refreshToken = jwt.sign({ sid: nanoid() }, REFRESH_KEY );
+      },
+   }),
+      accessSid = nanoid(),
+      refreshSid = nanoid(),
+      accessToken = jwt.sign({ sid: accessSid }, ACCESS_KEY ),
+      refreshToken = jwt.sign({ sid: refreshSid }, REFRESH_KEY );
 
    // await storage.set()
 
    return response( res, 200, {
 
       'Content-Type': 'application/json',
-      'Set-Cookie': `refresh=${ refreshToken };max-age=2592000;samesite=lax;httpOnly;`, // max-age in sec.
+      'Set-Cookie': `token=${ refreshToken };max-age=2592000;samesite=lax;httpOnly;`, // max-age in sec.
    },
       JSON.stringify({ accessToken, }),
    );
