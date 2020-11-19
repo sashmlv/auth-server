@@ -1,14 +1,12 @@
 'use strict';
 
 const jwt = require( 'jsonwebtoken' ),
-   request = require( '../modules/request' ),
-   response = require( '../modules/response' ),
-   storage = require( '../libs/storage' ),
+   storage = require( '../../libs/storage' ),
    { nanoid } = require( 'nanoid' ),
    {
       ACCESS_KEY,
       REFRESH_KEY,
-   } = require( '../config' ),
+   } = require( '../../config' ),
    notFound = JSON.stringify({
 
       message: 'Not Found',
@@ -42,7 +40,9 @@ async function userSignin( res, { host, port }){
 
    if( ! ok ){
 
-      return response( res, 404, { 'Content-Type': 'application/json' }, notFound );
+      return res
+         .writeHead( 404, { 'Content-Type': 'application/json' })
+         .end( notFound );
    }
 
    const accessSid = nanoid(),
@@ -50,19 +50,18 @@ async function userSignin( res, { host, port }){
       accessToken = jwt.sign({ sid: accessSid }, ACCESS_KEY ),
       refreshToken = jwt.sign({ sid: refreshSid }, REFRESH_KEY );
 
-   // await storage.set( refreshSid, {
+   await storage.set( refreshSid, JSON.stringify({
+      ...user,
+      accessSid,
+   }));
 
-   //    ...user,
-   //    accessSid,
-   // });
+   return res
+      .writeHead( 200, {
 
-   return response( res, 200, {
-
-      'Content-Type': 'application/json',
-      'Set-Cookie': `token=${ refreshToken };max-age=2592000;samesite=lax;httpOnly;`, // max-age in sec.
-   },
-      JSON.stringify({ accessToken, }),
-   );
+         'Content-Type': 'application/json',
+         'Set-Cookie': `token=${ refreshToken };max-age=2592000;samesite=lax;httpOnly;`, // max-age in sec.
+      })
+      .end( JSON.stringify({ accessToken, }));
 }
 
 module.exports = userSignin;

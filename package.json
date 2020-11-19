@@ -16,6 +16,7 @@
   "license": "UNLICENSE",
   "dependencies": {
     "dotenv": "^8.2.0",
+    "fast-url-parser": "^1.1.3",
     "jsonwebtoken": "^8.5.1",
     "nanoid": "^3.1.16",
     "pino": "^6.7.0",

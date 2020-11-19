@@ -1,16 +1,16 @@
 version: '3.8'
 
 services:
-  proxy:
-    container_name: auth-proxy
-    image: nginx
-    restart: unless-stopped
-    network_mode: host
-    volumes:
-      - $PWD/docker/proxy.conf.template:/etc/nginx/templates/proxy.conf.template
-      # - $PWD/certs:/etc/nginx/certs
-    env_file:
-      - .env-docker
+  # proxy:
+  #   container_name: auth-proxy
+  #   image: nginx
+  #   restart: unless-stopped
+  #   network_mode: host
+  #   volumes:
+  #     - $PWD/docker/proxy.conf.template:/etc/nginx/templates/proxy.conf.template
+  #     # - $PWD/certs:/etc/nginx/certs
+  #   env_file:
+  #     - .env-docker
   redis:
     container_name: auth-redis
     image: redis:6.0.9-alpine
