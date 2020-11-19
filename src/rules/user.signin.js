@@ -2,24 +2,19 @@
 
 const jwt = require( 'jsonwebtoken' ),
    storage = require( '../../libs/storage' ),
+   request = require( '../../modules/request' ),
    { nanoid } = require( 'nanoid' ),
    {
       ACCESS_KEY,
       REFRESH_KEY,
-   } = require( '../../config' ),
-   notFound = JSON.stringify({
-
-      message: 'Not Found',
-      code: 'NOT_FOUND',
-      status: 404,
-   });
+   } = require( '../../config/cred' );
 
 /**
  * User signin
  * @param {object} res - response
  * @return {undefined} Return undefined
  **/
-async function userSignin( res, { host, port }){
+async function userSignin( req, res, { host, port }){
 
    let result = await request({
 
@@ -27,10 +22,16 @@ async function userSignin( res, { host, port }){
       port,
       path: '/api/user',
       method: 'POST',
-      headers: {
+      opts: {
 
-         'Content-Type': 'application/json'
+         json: true,
       },
+      body: {
+
+         login: '',
+         email: '',
+         password: '',
+      }
    });
 
    result = typeof result === 'string' ? JSON.parse( result ) : result;

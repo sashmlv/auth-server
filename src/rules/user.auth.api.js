@@ -7,7 +7,7 @@ const jwt = require( 'jsonwebtoken' ),
    {
       ACCESS_KEY,
       REFRESH_KEY,
-   } = require( '../../config' );
+   } = require( '../../config/cred' );
 
 /**
  * User access token

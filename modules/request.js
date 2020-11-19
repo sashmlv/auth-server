@@ -2,10 +2,10 @@
 
 const {
 
-   NODE_ENV,
+   PRODUCTION,
    SSL_ENABLED,
 } = require( '../config' ),
-   http = NODE_ENV === 'production' || SSL_ENABLED ? require( 'https' ) : require( 'http' );
+   http = PRODUCTION || SSL_ENABLED ? require( 'https' ) : require( 'http' );
 
 /**
  * Request

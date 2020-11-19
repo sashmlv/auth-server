@@ -2,7 +2,7 @@
 
 const crypto = require( 'crypto' ),
    util = require( 'util' ),
-   { AuthError } = require( './auth.error' ),
+   AuthError = require( './auth.error' ),
    scrypt  = util.promisify( crypto.scrypt );
 
 /**

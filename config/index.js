@@ -21,6 +21,7 @@ for( const key in env ){
 const config = {
 
    NODE_ENV,
+   PRODUCTION: NODE_ENV === 'production',
    SSL_ENABLED: env.SSL_ENABLED === 'true',
    SSL_KEY: env.SSL_KEY,
    SSL_CRT: env.SSL_CRT,

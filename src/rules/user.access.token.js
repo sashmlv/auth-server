@@ -7,7 +7,7 @@ const jwt = require( 'jsonwebtoken' ),
    {
       ACCESS_KEY,
       REFRESH_KEY,
-   } = require( '../../config' );
+   } = require( '../../config/cred' );
 
 /**
  * User access token
@@ -31,6 +31,7 @@ async function userSignin( req, res, { host, port }){
          'Content-Type': 'application/json'
       },
       body: {
+
          id: user.id
       }
    });

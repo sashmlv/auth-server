@@ -2,18 +2,18 @@
 
 const {
 
-   NODE_ENV,
+   PRODUCTION,
    HOST,
    PORT,
    SSL_ENABLED,
 } = require( './config' ),
    log = require( './libs/logger' ),
-   PROTOCOL = NODE_ENV === 'production' || SSL_ENABLED ? 'https' : 'http',
+   PROTOCOL = PRODUCTION || SSL_ENABLED ? 'https' : 'http',
    http = PROTOCOL === 'https' ? require( 'https' ) : require( 'http' ),
    auth = require( './src/auth' );
 
-process.on('unhandledRejection', err => log.error(err))
-  .on('uncaughtException', err => log.error(err));
+process.on( 'unhandledRejection', err => log.error( err ))
+  .on( 'uncaughtException', err => log.error( err ));
 
 http.createServer( auth ).listen(
 

@@ -1,8 +1,8 @@
 'use strict';
 
-const { NODE_ENV } = require( '../config' ),
+const { PRODUCTION } = require( '../config' ),
    pino = require( 'pino' ),
-   log = NODE_ENV === 'production' ? {} : pino({
+   log = PRODUCTION ? {} : pino({
 
       prettyPrint: {
 

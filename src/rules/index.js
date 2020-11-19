@@ -1,20 +1,20 @@
 'use strict';
 
-const { URLS } = require( '../config' ),
+const { URLS } = require( '../../config' ),
    {
       frontend,
       apiUsers,
    } = URLS,
-   proxy = require( '../modules/proxy' ),
-   userSignin = require( './user/user.signin' ),
-   userToken = require( './user/user.access.token' ),
-   userAuthApi = require( './user/user.auth.api' );
+   proxy = require( '../../modules/proxy' ),
+   userSignin = require( './user.signin' ),
+   userToken = require( './user.access.token' ),
+   userAuthApi = require( './user.auth.api' );
 
 const toFrontend = ( req, res ) => proxy( req, res, frontend ),
    toApiUsers = ( req, res ) => proxy( req, res, apiUsers ),
-   toUserSignin = ( req, res ) => userSignin( res, apiUsers ),
-   toUserToken = ( req, res ) => userToken( res, apiUsers ),
-   toUserAuthApi = ( req, res ) => userAuthApi( res, apiUsers );
+   toUserSignin = ( req, res ) => userSignin( req, res, apiUsers ),
+   toUserToken = ( req, res ) => userToken( req, res, apiUsers ),
+   toUserAuthApi = ( req, res ) => userAuthApi( req, res, apiUsers );
 
 const rules = {
 

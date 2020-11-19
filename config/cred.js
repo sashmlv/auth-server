@@ -1,11 +1,20 @@
 'use strict';
 
-const crypt = require( './modules/crypt' ),
+const crypt = require( '../modules/crypt' ),
    AuthError = require( '../modules/auth.error' ),
-   PASSWORD = process.env.PASSWORD,
-   SALT = process.env.SALT,
-   ACCESS_KEY = process.env.ACCESS_KEY,
-   REFRESH_KEY = process.env.REFRESH_KEY,
+   {
+      PRODUCTION,
+      ACCESS_KEY,
+      REFRESH_KEY,
+   } = require( '../config' ),
+   path = require( 'path' ),
+   fs = require( 'fs' ),
+   dotenv = require( 'dotenv' ),
+   ROOT = path.resolve( `${ __dirname }/..` ),
+   crd = dotenv.parse( fs.readFileSync( `${ ROOT }/.crd` )),
+   PASSWORD = crd.PASSWORD,
+   SALT = crd.SALT,
+   keys = {},
    LENGTH = 20,
    ok = PASSWORD.length > LENGTH && SALT.length > LENGTH &&
       ACCESS_KEY.length > LENGTH && REFRESH_KEY.length > LENGTH;
@@ -15,10 +24,17 @@ if( ! ok ){
    throw new AuthError( 'Please check keys' );
 }
 
-crypt.initSync( PASSWORD, SALT );
+if( PRODUCTION ){
 
-module.exports = Object.freeze({
+   crypt.initSync( PASSWORD, SALT );
 
-   ACCESS_KEY: crypt.decrypt( ACCESS_KEY ),
-   REFRESH_KEY: crypt.decrypt( REFRESH_KEY ),
-});
+   keys.ACCESS_KEY = crypt.decrypt( ACCESS_KEY );
+   keys.REFRESH_KEY = crypt.decrypt( REFRESH_KEY );
+}
+else {
+
+   keys.ACCESS_KEY = ACCESS_KEY;
+   keys.REFRESH_KEY = REFRESH_KEY;
+}
+
+module.exports = Object.freeze( keys );
