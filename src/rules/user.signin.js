@@ -3,7 +3,12 @@
 const jwt = require( 'jsonwebtoken' ),
    storage = require( '../../libs/storage' ),
    request = require( '../../modules/request' ),
+   getBody = require( '../../modules/get.body' ),
+   jsonParse = require( '../../modules/json.parse' ),
    { nanoid } = require( 'nanoid' ),
+   {
+      NOT_FOUND_STR,
+   } = require( '../../modules/errors' ),
    {
       ACCESS_KEY,
       REFRESH_KEY,
@@ -16,7 +21,7 @@ const jwt = require( 'jsonwebtoken' ),
  **/
 async function userSignin( req, res, { host, port }){
 
-   let result = await request({
+   const result = jsonParse( await request({
 
       host,
       port,
@@ -26,24 +31,17 @@ async function userSignin( req, res, { host, port }){
 
          json: true,
       },
-      body: {
-
-         login: '',
-         email: '',
-         password: '',
-      }
-   });
-
-   result = typeof result === 'string' ? JSON.parse( result ) : result;
+      body: await getBody( req ),
+   }));
 
    const user = result.data,
-      ok = result.success && user && user.id;
+      userOk = result.success && user && user.id;
 
-   if( ! ok ){
+   if( ! userOk ){
 
       return res
          .writeHead( 404, { 'Content-Type': 'application/json' })
-         .end( notFound );
+         .end( NOT_FOUND_STR );
    }
 
    const accessSid = nanoid(),
@@ -52,6 +50,7 @@ async function userSignin( req, res, { host, port }){
       refreshToken = jwt.sign({ sid: refreshSid }, REFRESH_KEY );
 
    await storage.set( refreshSid, JSON.stringify({
+
       ...user,
       accessSid,
    }));
