@@ -9,32 +9,72 @@ const {
 
 /**
  * Request
- * @param {object} opts
- * @param {string} opts.host
- * @param {string} opts.port
- * @param {string} opts.path
- * @param {string} opts.method
- * @param {string} opts.headers
+ * @param {object} args
+ * @param {string} args.host
+ * @param {string} args.port
+ * @param {string} args.path
+ * @param {string} args.method
+ * @param {string} args.headers
+ * @param {string} args.opts.json
  * @return {object} Return result
  **/
-async function request( opts ) {
+async function request( args ) {
 
    return new Promise(( resolve, reject ) => {
 
-      let result = '';
+      let result = '',
+         body = args.body;
 
-      const req = http.request( opts, res => {
+      const {
 
-         res.on( 'data', chunk => result += chunk );
-         res.on( 'end', _=> resolve( result ));
-         res.on( 'error', err => reject( err ));
-      });
+         host,
+         port,
+         path,
+         method,
+         headers = {},
+         opts = {},
+      } = args;
+
+      if( body ){
+
+         body = JSON.stringify( body );
+         headers[ 'Content-Type' ] = 'application/json';
+         headers[ 'Content-Length' ] = Buffer.byteLength( body, 'utf8' );
+      }
+
+      const req = http.request({
+            host,
+            port,
+            path,
+            method,
+            headers,
+         }, res => {
+
+            res.on( 'data', chunk => result += chunk );
+            res.on( 'end', _=> {
+
+               try {
+
+                  if( opts.json ){
+
+                     result = JSON.parse( result );
+                  }
+
+                  resolve( result );
+               }
+               catch( err ) {
+
+                  reject( err );
+               }
+            });
+            res.on( 'error', err => reject( err ));
+         });
 
       req.on( 'error', err => reject( err ));
 
-      if( opts.data ){
+      if( body ){
 
-         req.write( opts.data );
+         req.write( body );
       }
 
       req.end();
