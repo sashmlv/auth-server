@@ -1,6 +1,6 @@
 'use strict';
 
-const url = require( 'url' ),
+const url = require( 'fast-url-parser' ),
    AuthError = require( '../modules/auth.error' );
 
 /**

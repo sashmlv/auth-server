@@ -5,6 +5,7 @@ const {
    PRODUCTION,
    SSL_ENABLED,
 } = require( '../config' ),
+   jsonParse = require( './json.parse' ),
    http = PRODUCTION || SSL_ENABLED ? require( 'https' ) : require( 'http' );
 
 /**
@@ -53,19 +54,12 @@ async function request( args ) {
             res.on( 'data', chunk => result += chunk );
             res.on( 'end', _=> {
 
-               try {
+               if( opts.json ){
 
-                  if( opts.json ){
-
-                     result = JSON.parse( result );
-                  }
-
-                  resolve( result );
+                  result = jsonParse( result );
                }
-               catch( err ) {
 
-                  reject( err );
-               }
+               resolve( result );
             });
             res.on( 'error', err => reject( err ));
          });
