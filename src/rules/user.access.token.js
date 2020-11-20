@@ -8,6 +8,10 @@ const jwt = require( 'jsonwebtoken' ),
       UNAUTHORIZED_STR,
    } = require( '../../modules/errors' ),
    {
+      ACCESS_SEC,
+      REFRESH_SEC,
+   } = require( '../../config' ),
+   {
       ACCESS_KEY,
       REFRESH_KEY,
    } = require( '../../config/cred' );
@@ -54,13 +58,13 @@ async function userAccessToken( req, res, { host, port }){
    }
 
    const accessSid = nanoid(),
-      accessToken = jwt.sign({ sid: accessSid }, ACCESS_KEY, { expiresIn: 1200 }); // 1200 sec === 20 min
+      accessToken = jwt.sign({ sid: accessSid }, ACCESS_KEY, { expiresIn: ACCESS_SEC });
 
    await storage.set( refreshPayload.sid, JSON.stringify({
 
       ...user,
       accessSid,
-   }));
+   }), 'KEEPTTL' );
 
    return res
       .writeHead( 200, { 'Content-Type': 'application/json' })

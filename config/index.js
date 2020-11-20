@@ -29,6 +29,8 @@ const config = {
    PORT: env.PORT,
    ACCESS_KEY: env.ACCESS_KEY,
    REFRESH_KEY: env.REFRESH_KEY,
+   ACCESS_SEC: env.ACCESS_SEC,
+   REFRESH_SEC: env.REFRESH_SEC,
    STORAGE: {
 
       HOST: env.STORAGE_HOST,

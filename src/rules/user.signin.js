@@ -10,6 +10,10 @@ const jwt = require( 'jsonwebtoken' ),
       NOT_FOUND_STR,
    } = require( '../../modules/errors' ),
    {
+      ACCESS_SEC,
+      REFRESH_SEC,
+   } = require( '../../config' ),
+   {
       ACCESS_KEY,
       REFRESH_KEY,
    } = require( '../../config/cred' );
@@ -46,20 +50,20 @@ async function userSignin( req, res, { host, port }){
 
    const accessSid = nanoid(),
       refreshSid = nanoid(),
-      accessToken = jwt.sign({ sid: accessSid }, ACCESS_KEY, { expiresIn: 1200 }), // 1200 sec === 20 min
-      refreshToken = jwt.sign({ sid: refreshSid }, REFRESH_KEY, { expiresIn: 2592000 }); // 2592000 sec === 1 month, equal to cookie lifetime below
+      accessToken = jwt.sign({ sid: accessSid }, ACCESS_KEY, { expiresIn: ACCESS_SEC }),
+      refreshToken = jwt.sign({ sid: refreshSid }, REFRESH_KEY, { expiresIn: REFRESH_SEC });
 
    await storage.set( refreshSid, JSON.stringify({
 
       ...user,
       accessSid,
-   }));
+   }, 'EX', REFRESH_SEC ));
 
    return res
       .writeHead( 200, {
 
          'Content-Type': 'application/json',
-         'Set-Cookie': `token=${ refreshToken };max-age=2592000;samesite=lax;httpOnly;`, // max-age in sec.
+         'Set-Cookie': `token=${ refreshToken };max-age=${ REFRESH_SEC };samesite=lax;httpOnly;`, // max-age in sec.
       })
       .end( JSON.stringify({ accessToken, }));
 }
