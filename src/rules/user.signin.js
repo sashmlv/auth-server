@@ -34,8 +34,8 @@ async function userSignin( req, res, { host, port }){
       body: await getBody( req ),
    }));
 
-   const user = result.data,
-      userOk = result.success && user && user.id;
+   const user = result && result.data,
+      userOk = result && result.success && user && user.id;
 
    if( ! userOk ){
 

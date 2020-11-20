@@ -1,9 +1,12 @@
 'use strict';
 
 const jwt = require( 'jsonwebtoken' ),
-   request = require( '../../modules/request' ),
    storage = require( '../../libs/storage' ),
-   nanoid = require( 'nanoid' ),
+   jsonParse = require( '../../modules/json.parse' ),
+   { nanoid } = require( 'nanoid' ),
+   {
+      UNAUTHORIZED_STR,
+   } = require( '../../modules/errors' ),
    {
       ACCESS_KEY,
       REFRESH_KEY,
@@ -11,49 +14,57 @@ const jwt = require( 'jsonwebtoken' ),
 
 /**
  * User access token
- * @param {object} res - response
+ * @param {object} req
+ * @param {object} res
  * @return {undefined} Return undefined
  **/
-async function userSignin( req, res, { host, port }){
+async function userAccessToken( req, res, { host, port }){
 
-   var decoded = jwt.verify(req.headers.token, 'shhhhh');
 
-   const user = await storage.get( decoded.sid );
+   const cookie = req.headers.cookie;
 
-   let result = await request({
+   if( ! cookie ){
 
-      host,
-      port,
-      path: '/api/user',
-      method: 'POST',
-      headers: {
+      return res
+         .writeHead( 401, { 'Content-Type': 'application/json' })
+         .end( UNAUTHORIZED_STR, );
+   }
 
-         'Content-Type': 'application/json'
-      },
-      body: {
+   const startTokenPos = cookie.indexOf( 'token=' ) + 6, // token= -> length 6
+      semicolonPos = cookie.indexOf( ';', startTokenPos ),
+      endTokenPos = semicolonPos < 0 ? cookie.length : semicolonPos,
+      refreshToken = cookie.substring( startTokenPos, endTokenPos );
 
-         id: user.id
-      }
-   });
+   if( ! refreshToken ){
 
-   result = typeof result === 'string' ? JSON.parse( result ) : result;
+      return res
+         .writeHead( 401, { 'Content-Type': 'application/json' })
+         .end( UNAUTHORIZED_STR, );
+   }
 
-   const ok = result.success && result.data && ( result.data.id === user.id );
+   const refreshPayload = jwt.verify( refreshToken, REFRESH_KEY ),
+      user = jsonParse( await storage.get( refreshPayload.sid )),
+      userOk = user && user.id;
 
-   if( ! ok ){
+   if( ! userOk ){
 
-      throw new Error('not allowed');
+      return res
+         .writeHead( 401, { 'Content-Type': 'application/json' })
+         .end( UNAUTHORIZED_STR, );
    }
 
    const accessSid = nanoid(),
       accessToken = jwt.sign({ sid: accessSid }, ACCESS_KEY );
 
-   return res
-      .writeHead( 200, {
+   await storage.set( refreshPayload.sid, JSON.stringify({
 
-         'Content-Type': 'application/json',
-      })
+      ...user,
+      accessSid,
+   }));
+
+   return res
+      .writeHead( 200, { 'Content-Type': 'application/json' })
       .end( JSON.stringify({ accessToken, }));
 }
 
-module.exports = userSignin;
+module.exports = userAccessToken;

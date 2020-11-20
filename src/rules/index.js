@@ -7,13 +7,13 @@ const { URLS } = require( '../../config' ),
    } = URLS,
    proxy = require( '../../modules/proxy' ),
    userSignin = require( './user.signin' ),
-   userToken = require( './user.access.token' ),
+   userAccessToken = require( './user.access.token' ),
    userAuthApi = require( './user.auth.api' );
 
 const toFrontend = ( req, res ) => proxy( req, res, frontend ),
    toApiUsers = ( req, res ) => proxy( req, res, apiUsers ),
    toUserSignin = ( req, res ) => userSignin( req, res, apiUsers ),
-   toUserToken = ( req, res ) => userToken( req, res, apiUsers ),
+   toUserAccessToken = ( req, res ) => userAccessToken( req, res, apiUsers ),
    toUserAuthApi = ( req, res ) => userAuthApi( req, res, apiUsers );
 
 const rules = {
@@ -24,7 +24,7 @@ const rules = {
    '/signup':     toFrontend,
    '/api/signup': toApiUsers,
    '/api/signin': toUserSignin,
-   '/api/token':  toUserToken,
+   '/api/token':  toUserAccessToken,
    '/api/user':   toUserAuthApi,
    '/api/users':  toUserAuthApi,
 };

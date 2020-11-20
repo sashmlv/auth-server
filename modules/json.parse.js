@@ -5,7 +5,7 @@
  * @param {string} str
  * @return {*} Return result
  **/
-async function jsonParse( str ){
+function jsonParse( str ){
 
    try {
 
