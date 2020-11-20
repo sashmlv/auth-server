@@ -54,7 +54,7 @@ async function userAccessToken( req, res, { host, port }){
    }
 
    const accessSid = nanoid(),
-      accessToken = jwt.sign({ sid: accessSid }, ACCESS_KEY );
+      accessToken = jwt.sign({ sid: accessSid }, ACCESS_KEY, { expiresIn: 1200 }); // 1200 sec === 20 min
 
    await storage.set( refreshPayload.sid, JSON.stringify({
 

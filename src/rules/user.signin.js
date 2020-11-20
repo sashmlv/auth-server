@@ -46,8 +46,8 @@ async function userSignin( req, res, { host, port }){
 
    const accessSid = nanoid(),
       refreshSid = nanoid(),
-      accessToken = jwt.sign({ sid: accessSid }, ACCESS_KEY ),
-      refreshToken = jwt.sign({ sid: refreshSid }, REFRESH_KEY );
+      accessToken = jwt.sign({ sid: accessSid }, ACCESS_KEY, { expiresIn: 1200 }), // 1200 sec === 20 min
+      refreshToken = jwt.sign({ sid: refreshSid }, REFRESH_KEY, { expiresIn: 2592000 }); // 2592000 sec === 1 month, equal to cookie lifetime below
 
    await storage.set( refreshSid, JSON.stringify({
 
