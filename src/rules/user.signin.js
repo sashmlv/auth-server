@@ -62,7 +62,8 @@ async function userSignin( req, res, { host, port }){
 
       ...user,
       accessSid,
-      used: 0, // count refresh token using
+      userAgent: req.headers[ 'user-agent' ],
+      used: 0, // count refresh token used
    }, 'EX', REFRESH_SEC ));
 
    return res

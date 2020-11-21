@@ -52,7 +52,7 @@ async function userAccessToken( req, res, { host, port }){
    const refreshPayload = await jwtVerify( refreshToken, REFRESH_KEY ),
       user = jsonParse( await storage.get( refreshPayload.sid )),
       maxUsed = Math.floor( + REFRESH_SEC / + ACCESS_SEC ),
-      userOk = user && user.id && user.accessSid && ( user.used < maxUsed );
+      userOk = user && user.id && user.accessSid && ( user.used < maxUsed ) && ( user.userAgent === req.headers[ 'user-agent' ]);
 
    if( ! userOk ){
 
