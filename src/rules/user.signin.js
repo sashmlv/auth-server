@@ -10,13 +10,16 @@ const jwt = require( 'jsonwebtoken' ),
       NOT_FOUND_STR,
    } = require( '../../modules/errors' ),
    {
+      PRODUCTION,
+      SSL_ENABLED,
       ACCESS_SEC,
       REFRESH_SEC,
    } = require( '../../config' ),
    {
       ACCESS_KEY,
       REFRESH_KEY,
-   } = require( '../../config/cred' );
+   } = require( '../../config/cred' ),
+   cookieSecure = PRODUCTION || SSL_ENABLED ? 'secure;' : '';
 
 /**
  * User signin
@@ -63,7 +66,7 @@ async function userSignin( req, res, { host, port }){
       .writeHead( 200, {
 
          'Content-Type': 'application/json',
-         'Set-Cookie': `token=${ refreshToken };max-age=${ REFRESH_SEC };samesite=lax;httpOnly;`, // max-age in sec.
+         'Set-Cookie': `token=${ refreshToken };max-age=${ REFRESH_SEC };samesite=lax;${ cookieSecure }httpOnly;`,
       })
       .end( JSON.stringify({ accessToken, }));
 }
