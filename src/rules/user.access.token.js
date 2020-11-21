@@ -6,9 +6,11 @@ const jwt = require( 'jsonwebtoken' ),
    jwtVerify = promisify( jwt.verify ),
    storage = require( '../../libs/storage' ),
    jsonParse = require( '../../modules/json.parse' ),
+   getBody = require( '../../modules/get.body' ),
    { nanoid } = require( 'nanoid' ),
    {
       UNAUTHORIZED_STR,
+      NOT_FOUND_STR,
    } = require( '../../modules/errors' ),
    {
       ACCESS_SEC,
@@ -27,6 +29,12 @@ const jwt = require( 'jsonwebtoken' ),
  **/
 async function userAccessToken( req, res, { host, port }){
 
+   if( req.method !== 'POST' ){
+
+      return res
+         .writeHead( 404, { 'Content-Type': 'application/json' })
+         .end( NOT_FOUND_STR );
+   }
 
    const cookie = req.headers.cookie;
 
@@ -49,10 +57,17 @@ async function userAccessToken( req, res, { host, port }){
          .end( UNAUTHORIZED_STR, );
    }
 
-   const refreshPayload = await jwtVerify( refreshToken, REFRESH_KEY ),
+   const { id } = await getBody( req ), // user id
+      refreshPayload = await jwtVerify( refreshToken, REFRESH_KEY ),
       user = jsonParse( await storage.get( refreshPayload.sid )),
       maxUsed = Math.floor( + REFRESH_SEC / + ACCESS_SEC ),
-      userOk = user && user.id && user.accessSid && ( user.used < maxUsed ) && ( user.userAgent === req.headers[ 'user-agent' ]);
+      userOk = id && user && user.id && (
+         id === user.id
+      ) && (
+         user.used < maxUsed
+      ) && (
+         user.userAgent === req.headers[ 'user-agent' ]
+      );
 
    if( ! userOk ){
 
