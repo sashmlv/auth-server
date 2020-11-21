@@ -2,41 +2,42 @@
 
 const jwt = require( 'jsonwebtoken' ),
    { promisify } = require( 'util' ),
-   jwtSign = promisify( jwt.sign ),
    jwtVerify = promisify( jwt.verify ),
+   jwtDecode = promisify( jwt.decode ),
+   proxy = require( '../../modules/proxy' ),
    storage = require( '../../libs/storage' ),
    jsonParse = require( '../../modules/json.parse' ),
-   getBody = require( '../../modules/get.body' ),
-   { nanoid } = require( 'nanoid' ),
    {
       UNAUTHORIZED_STR,
-      NOT_FOUND_STR,
    } = require( '../../modules/errors' ),
-   {
-      ACCESS_SEC,
-      REFRESH_SEC,
-   } = require( '../../config' ),
    {
       ACCESS_KEY,
       REFRESH_KEY,
    } = require( '../../config/cred' );
 
 /**
- * User access token
+ * Authenticate user for acceess to user api
  * @param {object} req
  * @param {object} res
+ * @param {object} args
+ * @param {string} args.host - user api host
+ * @param {string} args.port - user api port
  * @return {undefined} Return undefined
  **/
-async function userAccessToken( req, res ){
+async function userAuthenticateApi( req, res, { host, port }){
 
-   if( req.method !== 'POST' ){
+   const authorization = req.headers.authorization;
+
+   if( ! authorization ){
 
       return res
-         .writeHead( 404, { 'Content-Type': 'application/json' })
-         .end( NOT_FOUND_STR );
+         .writeHead( 401, { 'Content-Type': 'application/json' })
+         .end( UNAUTHORIZED_STR, );
    }
 
-   const cookie = req.headers.cookie;
+   const accessToken = authorization.substring( 7 ), // "Bearer " -> length 7
+      accessPayload = await jwtVerify( accessToken, ACCESS_KEY ),
+      cookie = req.headers.cookie;
 
    if( ! cookie ){
 
@@ -57,14 +58,10 @@ async function userAccessToken( req, res ){
          .end( UNAUTHORIZED_STR, );
    }
 
-   const { id } = await getBody( req ), // user id
-      refreshPayload = await jwtVerify( refreshToken, REFRESH_KEY ),
+   const refreshPayload = await jwtDecode( refreshToken ),
       user = jsonParse( await storage.get( refreshPayload.sid )),
-      maxUsed = Math.floor( + REFRESH_SEC / + ACCESS_SEC ),
-      userOk = id && user && user.id && (
-         id === user.id
-      ) && (
-         user.used < maxUsed
+      userOk = user && user.id && (
+         user.accessSid === accessPayload.sid
       ) && (
          user.userAgent === req.headers[ 'user-agent' ]
       );
@@ -78,19 +75,7 @@ async function userAccessToken( req, res ){
          .end( UNAUTHORIZED_STR, );
    }
 
-   const accessSid = nanoid(),
-      accessToken = await jwtSign({ sid: accessSid }, ACCESS_KEY, { expiresIn: ACCESS_SEC });
-
-   await storage.set( refreshPayload.sid, JSON.stringify({
-
-      ...user,
-      accessSid,
-      used: user.used ++,
-   }), 'KEEPTTL' );
-
-   return res
-      .writeHead( 200, { 'Content-Type': 'application/json' })
-      .end( JSON.stringify({ accessToken, }));
+   return proxy( req, res, { host, port });
 }
 
-module.exports = userAccessToken;
+module.exports = userAuthenticateApi;

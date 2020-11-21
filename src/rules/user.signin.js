@@ -25,7 +25,11 @@ const jwt = require( 'jsonwebtoken' ),
 
 /**
  * User signin
- * @param {object} res - response
+ * @param {object} req
+ * @param {object} res
+ * @param {object} args
+ * @param {string} args.host - user api host
+ * @param {string} args.port - user api port
  * @return {undefined} Return undefined
  **/
 async function userSignin( req, res, { host, port }){

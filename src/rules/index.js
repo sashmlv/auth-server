@@ -8,13 +8,13 @@ const { URLS } = require( '../../config' ),
    proxy = require( '../../modules/proxy' ),
    userSignin = require( './user.signin' ),
    userAccessToken = require( './user.access.token' ),
-   userAuthApi = require( './user.auth.api' );
+   userAuthenticateApi = require( './user.authenticate.api' );
 
 const toFrontend = ( req, res ) => proxy( req, res, frontend ),
    toApiUsers = ( req, res ) => proxy( req, res, apiUsers ),
    toUserSignin = ( req, res ) => userSignin( req, res, apiUsers ),
-   toUserAccessToken = ( req, res ) => userAccessToken( req, res, apiUsers ),
-   toUserAuthApi = ( req, res ) => userAuthApi( req, res, apiUsers );
+   toUserAccessToken = ( req, res ) => userAccessToken( req, res ),
+   toUserAuthenticateApi = ( req, res ) => userAuthenticateApi( req, res, apiUsers );
 
 const rules = {
 
@@ -25,8 +25,8 @@ const rules = {
    '/api/signup': toApiUsers,
    '/api/signin': toUserSignin,
    '/api/token':  toUserAccessToken,
-   '/api/user':   toUserAuthApi,
-   '/api/users':  toUserAuthApi,
+   '/api/user':   toUserAuthenticateApi,
+   '/api/users':  toUserAuthenticateApi,
 };
 
 module.exports = rules;
