@@ -62,6 +62,7 @@ async function userSignin( req, res, { host, port }){
 
       ...user,
       accessSid,
+      used: 0, // count refresh token using
    }, 'EX', REFRESH_SEC ));
 
    return res
