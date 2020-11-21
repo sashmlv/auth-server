@@ -1,6 +1,9 @@
 'use strict';
 
 const jwt = require( 'jsonwebtoken' ),
+   { promisify } = require( 'util' ),
+   jwtSign = promisify( jwt.sign ),
+   jwtVerify = promisify( jwt.verify ),
    storage = require( '../../libs/storage' ),
    jsonParse = require( '../../modules/json.parse' ),
    { nanoid } = require( 'nanoid' ),
@@ -46,7 +49,7 @@ async function userAccessToken( req, res, { host, port }){
          .end( UNAUTHORIZED_STR, );
    }
 
-   const refreshPayload = jwt.verify( refreshToken, REFRESH_KEY ),
+   const refreshPayload = await jwtVerify( refreshToken, REFRESH_KEY ),
       user = jsonParse( await storage.get( refreshPayload.sid )),
       userOk = user && user.id;
 
@@ -58,7 +61,7 @@ async function userAccessToken( req, res, { host, port }){
    }
 
    const accessSid = nanoid(),
-      accessToken = jwt.sign({ sid: accessSid }, ACCESS_KEY, { expiresIn: ACCESS_SEC });
+      accessToken = await jwtSign({ sid: accessSid }, ACCESS_KEY, { expiresIn: ACCESS_SEC });
 
    await storage.set( refreshPayload.sid, JSON.stringify({
 

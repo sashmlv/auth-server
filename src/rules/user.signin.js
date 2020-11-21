@@ -1,6 +1,8 @@
 'use strict';
 
 const jwt = require( 'jsonwebtoken' ),
+   { promisify } = require( 'util' ),
+   jwtSign = promisify( jwt.sign ),
    storage = require( '../../libs/storage' ),
    request = require( '../../modules/request' ),
    getBody = require( '../../modules/get.body' ),
@@ -53,8 +55,8 @@ async function userSignin( req, res, { host, port }){
 
    const accessSid = nanoid(),
       refreshSid = nanoid(),
-      accessToken = jwt.sign({ sid: accessSid }, ACCESS_KEY, { expiresIn: ACCESS_SEC }),
-      refreshToken = jwt.sign({ sid: refreshSid }, REFRESH_KEY, { expiresIn: REFRESH_SEC });
+      accessToken = await jwtSign({ sid: accessSid }, ACCESS_KEY, { expiresIn: ACCESS_SEC }),
+      refreshToken = await jwtSign({ sid: refreshSid }, REFRESH_KEY, { expiresIn: REFRESH_SEC });
 
    await storage.set( refreshSid, JSON.stringify({
 
