@@ -30,6 +30,13 @@ const jwt = require( 'jsonwebtoken' ),
  **/
 async function userSignin( req, res, { host, port }){
 
+   if( req.method !== 'POST' ){
+
+      return res
+         .writeHead( 404, { 'Content-Type': 'application/json' })
+         .end( NOT_FOUND_STR );
+   }
+
    const result = jsonParse( await request({
 
       host,
@@ -64,7 +71,7 @@ async function userSignin( req, res, { host, port }){
       accessSid,
       userAgent: req.headers[ 'user-agent' ],
       used: 0, // count refresh token used
-   }, 'EX', REFRESH_SEC ));
+   }), 'EX', REFRESH_SEC );
 
    return res
       .writeHead( 200, {
