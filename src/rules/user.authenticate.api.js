@@ -16,12 +16,12 @@ const jwt = require( 'jsonwebtoken' ),
    } = require( '../../config/cred' );
 
 /**
- * Authenticate user for acceess to user api
+ * Authenticate user for acceess to api
  * @param {object} req
  * @param {object} res
  * @param {object} args
- * @param {string} args.host - user api host
- * @param {string} args.port - user api port
+ * @param {string} args.host - api host
+ * @param {string} args.port - api port
  * @return {undefined} Return undefined
  **/
 async function userAuthenticateApi( req, res, { host, port }){
