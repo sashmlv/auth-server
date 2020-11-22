@@ -16,7 +16,7 @@ const jwt = require( 'jsonwebtoken' ),
    } = require( '../../config/cred' );
 
 /**
- * Authenticate user for acceess to api
+ * Authenticate user for api acceess
  * @param {object} req
  * @param {object} res
  * @param {object} args

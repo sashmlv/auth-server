@@ -1,0 +1,10 @@
+{
+  "spec_dir": "src",
+  "spec_files": [
+    "**/**/*.test.js"
+  ],
+  "failFast": true,
+  "stopSpecOnExpectationFailure": true,
+  "oneFailurePerSpec": true,
+  "random": false
+}
