@@ -6,7 +6,8 @@ const path = require( 'path' ),
    parseUrls = require( './parse.urls' ),
    ROOT = path.resolve( `${ __dirname }/..` ),
    env = dotenv.parse( fs.readFileSync( `${ ROOT }/.env` )),
-   NODE_ENV = process.env.NODE_ENV || env.NODE_ENV || 'development';
+   NODE_ENV = process.env.NODE_ENV || env.NODE_ENV || 'development',
+   PRODUCTION = NODE_ENV === 'production';
 
 for( const key in env ){
 
@@ -22,7 +23,7 @@ const config = {
 
    NODE_ENV,
    ROOT,
-   PRODUCTION: NODE_ENV === 'production',
+   PRODUCTION,
    SSL_ENABLED: env.SSL_ENABLED === 'true',
    SSL_KEY: env.SSL_KEY,
    SSL_CRT: env.SSL_CRT,
@@ -47,4 +48,4 @@ const config = {
 
 config.URLS = parseUrls( config.URLS );
 
-module.exports = Object.freeze( config );
+module.exports = PRODUCTION ? Object.freeze( config ) : config;

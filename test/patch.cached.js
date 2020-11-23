@@ -6,7 +6,7 @@
  * @param {string} module
  * @return {undefind} Return undefind
  **/
-function monkeyPatching( path, module ){
+function patchCached( path, module ){
 
    delete require.cache[ require.resolve( path )];
    require.cache[ require.resolve( path )] = {
@@ -15,4 +15,4 @@ function monkeyPatching( path, module ){
    };
 }
 
-module.exports = monkeyPatching;
+module.exports = patchCached;
